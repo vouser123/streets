@@ -22,3 +22,24 @@ if command -v bd >/dev/null 2>&1; then
   if [ $_bd_exit -ne 0 ]; then exit $_bd_exit; fi
 fi
 # --- END BEADS INTEGRATION v1.0.2 ---
+
+if command -v node >/dev/null 2>&1; then
+  if [ -f "scripts/run-biome-staged.mjs" ]; then
+    node scripts/run-biome-staged.mjs || exit $?
+  fi
+  if [ -f "scripts/check-readme-update.mjs" ]; then
+    node scripts/check-readme-update.mjs || exit $?
+  fi
+  if [ -f "scripts/check-docs-readme-update.mjs" ]; then
+    node scripts/check-docs-readme-update.mjs || exit $?
+  fi
+  if [ -f "scripts/check-structure.mjs" ]; then
+    node scripts/check-structure.mjs --staged || exit $?
+  fi
+fi
+
+if command -v powershell >/dev/null 2>&1; then
+  if [ -f "scripts/run-gitleaks-staged.ps1" ]; then
+    powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-gitleaks-staged.ps1 || exit $?
+  fi
+fi

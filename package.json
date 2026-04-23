@@ -1,0 +1,19 @@
+{
+  "name": "streets",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Streets rebuild repo scaffolding and workflow scripts",
+  "scripts": {
+    "beads:install-commit-hook": "git config core.hooksPath .beads/hooks && bd hooks install --beads",
+    "beads:quickref": "node scripts/generate-beads-quickref.mjs",
+    "biome:check": "biome check .",
+    "biome:lint": "biome lint .",
+    "biome:format": "biome format --write .",
+    "biome:staged": "node scripts/run-biome-staged.mjs",
+    "commit:preflight": "node scripts/commit-preflight.mjs",
+    "structure:check": "node scripts/check-structure.mjs --staged"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.11"
+  }
+}

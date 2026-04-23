@@ -3,3 +3,18 @@
 .dolt/
 *.db
 .beads-credential-key
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+coverage/
+
+# Local tooling state
+.vexp/index.db
+.vexp/index.db-shm
+.vexp/index.db-wal
+.vexp/daemon.log
+.vexp/daemon.pid
+.vexp/daemon.pipe
+.vexp/healthy
