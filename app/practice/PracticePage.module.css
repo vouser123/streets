@@ -1,0 +1,91 @@
+.stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: var(--surface);
+  box-shadow: var(--panel-shadow);
+}
+
+.modeGroup {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.modeCard {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem;
+  border-radius: 1rem;
+  background: var(--surface-muted);
+  min-height: var(--control-min-height);
+}
+
+.modeCard input {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+}
+
+.modeTitle,
+.sectionTitle {
+  margin: 0;
+  font-weight: 800;
+}
+
+.notice,
+.status {
+  margin: 0;
+}
+
+.inlineLink,
+.resetButton {
+  min-height: var(--control-min-height);
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  font-weight: 700;
+}
+
+.inlineLink {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  background: var(--surface-strong);
+  text-decoration: none;
+}
+
+.resetButton {
+  border: 2px solid var(--border);
+  background: transparent;
+}
+
+.summaryList {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.summaryItem {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.9rem;
+  border-radius: 1rem;
+  background: var(--surface-muted);
+}
+
+.screenReaderOnly {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}

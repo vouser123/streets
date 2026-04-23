@@ -1,0 +1,72 @@
+.page {
+  position: relative;
+  min-height: 100vh;
+  padding: 1rem;
+  color: var(--text);
+  background: var(--page-bg);
+}
+
+.page[data-theme="dark"] {
+  --page-bg: #09111c;
+  --surface: #112033;
+  --surface-muted: #162840;
+  --surface-strong: #203653;
+  --text: #f5f9ff;
+  --border: #8ba6c8;
+}
+
+.page[data-theme="light"] {
+  --page-bg: #fbf7ee;
+  --surface: #fffaf0;
+  --surface-muted: #f4ecde;
+  --surface-strong: #ece1cd;
+  --text: #101620;
+  --border: #7f6d54;
+}
+
+.page[data-high-contrast="true"] {
+  --border: currentColor;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent 34%),
+    linear-gradient(180deg, rgba(53, 92, 157, 0.12), transparent 40%);
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  display: grid;
+  gap: 1.25rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.header {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-radius: 1.5rem;
+  background: var(--surface);
+  box-shadow: var(--panel-shadow);
+}
+
+.kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  color: var(--accent-deep);
+}
+
+.title,
+.intro {
+  margin: 0;
+}
+
+.page[data-focus-boost="true"] :focus-visible {
+  outline-width: 5px;
+}

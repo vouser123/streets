@@ -2,18 +2,36 @@
   "name": "streets",
   "version": "0.1.0",
   "private": true,
-  "description": "Streets rebuild repo scaffolding and workflow scripts",
+  "description": "Streets Next.js TypeScript rebuild for Vercel",
   "scripts": {
     "beads:install-commit-hook": "git config core.hooksPath .beads/hooks && bd hooks install --beads",
+    "build": "next build",
     "beads:quickref": "node scripts/generate-beads-quickref.mjs",
     "biome:check": "biome check .",
     "biome:lint": "biome lint .",
     "biome:format": "biome format --write .",
     "biome:staged": "node scripts/run-biome-staged.mjs",
     "commit:preflight": "node scripts/commit-preflight.mjs",
-    "structure:check": "node scripts/check-structure.mjs --staged"
+    "dev": "next dev",
+    "start": "next start",
+    "structure:check": "node scripts/check-structure.mjs --staged",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
+    "next": "^16.2.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.11"
+    "@biomejs/biome": "^2.4.11",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.7"
   }
 }

@@ -54,3 +54,5 @@
 # - github.repo
 
 sync.remote: "git+https://github.com/vouser123/streets.git"
+
+dolt.shared-server: false

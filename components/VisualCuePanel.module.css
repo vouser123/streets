@@ -1,0 +1,48 @@
+.panel {
+  display: grid;
+  place-items: center;
+  gap: 0.8rem;
+  min-height: 11rem;
+  border-radius: 1.5rem;
+  background: #030609;
+  color: white;
+  transition: background 120ms ease;
+}
+
+.panel[data-kind="user"][data-user-contrast="soft"] {
+  background: #7d7d7d;
+}
+
+.panel[data-kind="user"][data-user-contrast="balanced"] {
+  background: #bcbcbc;
+  color: #101010;
+}
+
+.panel[data-kind="user"][data-user-contrast="high"] {
+  background: #f2f2f2;
+  color: #101010;
+}
+
+.shape {
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 999px;
+  background: white;
+}
+
+.panel[data-kind="outside"][data-variant="up"] .shape {
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+.panel[data-kind="outside"][data-variant="down"] .shape {
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+}
+
+.panel[data-kind="outside"][data-variant="diamond"] .shape {
+  transform: rotate(45deg);
+  border-radius: 0;
+}
+
+.label {
+  font-weight: 800;
+}

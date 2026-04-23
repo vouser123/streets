@@ -1,0 +1,27 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: var(--surface);
+  box-shadow: var(--panel-shadow);
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+  font-weight: 700;
+}
+
+.field input {
+  min-height: var(--control-min-height);
+  border: 2px solid var(--border);
+  border-radius: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface-muted);
+}
+
+.sectionTitle,
+.panel p {
+  margin: 0;
+}

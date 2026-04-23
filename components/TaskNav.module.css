@@ -1,0 +1,22 @@
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.link {
+  min-height: var(--control-min-height);
+  padding: 0.9rem 1.1rem;
+  border-radius: 1rem;
+  background: var(--surface-strong);
+  color: inherit;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: var(--panel-shadow);
+}
+
+.link:hover,
+.link:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}

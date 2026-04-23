@@ -1,0 +1,20 @@
+.banner {
+  min-height: 4.5rem;
+  border-radius: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface-muted);
+  border: 2px solid color-mix(in srgb, var(--border) 80%, transparent);
+  font-weight: 700;
+}
+
+.banner[data-kind="user"] {
+  background: color-mix(in srgb, #ffffff 14%, var(--surface-muted));
+}
+
+.banner[data-kind="acceptable"] {
+  background: color-mix(in srgb, #d8ffdb 48%, var(--surface-muted));
+}
+
+.banner[data-kind="outside"] {
+  background: color-mix(in srgb, #ffe1db 52%, var(--surface-muted));
+}

@@ -8,6 +8,7 @@
       "!.next",
       "!.vexp",
       "!index.html",
+      "!public/legacy-prototype.html",
       "!RESEARCH.md",
       "!node_modules"
     ]

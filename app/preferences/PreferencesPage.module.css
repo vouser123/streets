@@ -1,0 +1,45 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: var(--surface);
+  box-shadow: var(--panel-shadow);
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+  font-weight: 700;
+}
+
+.field select {
+  min-height: var(--control-min-height);
+  border: 2px solid var(--border);
+  border-radius: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface-muted);
+}
+
+.note {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  background: var(--surface-muted);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: var(--control-min-height);
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  background: var(--surface-muted);
+  font-weight: 700;
+}
+
+.toggle input {
+  inline-size: 1.2rem;
+  block-size: 1.2rem;
+}

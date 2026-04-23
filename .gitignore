@@ -9,6 +9,7 @@ node_modules/
 .next/
 out/
 coverage/
+tsconfig.tsbuildinfo
 
 # Local tooling state
 .vexp/index.db
