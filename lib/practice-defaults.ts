@@ -4,7 +4,7 @@ import type { PersistedAppState } from "@/lib/types";
 
 export const DEFAULT_APP_STATE: PersistedAppState = {
   version: 1,
-  lastMode: "2",
+  lastMode: "2b",
   timing: {
     clearTime: null,
     fullTime: null,

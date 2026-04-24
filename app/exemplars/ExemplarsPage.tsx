@@ -117,7 +117,7 @@ export function ExemplarsPage() {
       ) : null}
       <section className={styles.panel}>
         <div className={styles.buttonGrid}>
-          {(["2", "2b", "3"] as PracticeMode[]).map((mode) => (
+          {(["2b", "2", "3"] as PracticeMode[]).map((mode) => (
             <button
               key={mode}
               className={styles.exemplarButton}

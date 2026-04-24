@@ -74,7 +74,7 @@ export function PracticePage() {
 
   const modeOptions = useMemo(
     () =>
-      (["2", "2b", "3"] as PracticeMode[]).map((value) => ({
+      (["2b", "2", "3"] as PracticeMode[]).map((value) => ({
         value,
         title: getModeTitle(value),
       })),
@@ -104,14 +104,16 @@ export function PracticePage() {
             {modeOptions.map((option) => (
               <label key={option.value} className={styles.modeCard}>
                 <input
+                  aria-label={option.title}
                   checked={mode === option.value}
                   name="mode"
                   onChange={() => setLastMode(option.value)}
                   type="radio"
                   value={option.value}
                 />
-                <span className={styles.modeTitle}>{option.value}</span>
-                <span>{option.title}</span>
+                <span aria-hidden="true" className={styles.modeTitle}>
+                  {option.title}
+                </span>
               </label>
             ))}
           </fieldset>
