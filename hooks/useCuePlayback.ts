@@ -20,7 +20,7 @@ export interface VisualCueState {
   userFlashContrast: UserFlashContrast;
 }
 
-const VISUAL_RESET_DELAY_MS = 260;
+const VISUAL_RESET_DELAY_MS = 200;
 
 export function useCuePlayback() {
   const { ensureAudioReady, playTone } = useBrowserAudioContext();

@@ -31,19 +31,43 @@ export function usePracticePersistence() {
   }, [hydrated, state]);
 
   const setTiming = (timing: TimingSettings) => {
-    setState((current) => ({ ...current, timing }));
+    setState((current) => {
+      const next = { ...current, timing };
+      if (hydrated) {
+        savePersistedAppState(next);
+      }
+      return next;
+    });
   };
 
   const setCalibration = (calibration: CalibrationSettings) => {
-    setState((current) => ({ ...current, calibration }));
+    setState((current) => {
+      const next = { ...current, calibration };
+      if (hydrated) {
+        savePersistedAppState(next);
+      }
+      return next;
+    });
   };
 
   const setPreferences = (preferences: Preferences) => {
-    setState((current) => ({ ...current, preferences }));
+    setState((current) => {
+      const next = { ...current, preferences };
+      if (hydrated) {
+        savePersistedAppState(next);
+      }
+      return next;
+    });
   };
 
   const setLastMode = (lastMode: PracticeMode) => {
-    setState((current) => ({ ...current, lastMode }));
+    setState((current) => {
+      const next = { ...current, lastMode };
+      if (hydrated) {
+        savePersistedAppState(next);
+      }
+      return next;
+    });
   };
 
   return {

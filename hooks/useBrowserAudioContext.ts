@@ -57,20 +57,26 @@ export function useBrowserAudioContext() {
           return;
         }
 
-        const startTime = context.currentTime + startDelaySec;
-        const oscillator = context.createOscillator();
+        const startTime = context.currentTime + Math.max(0, startDelaySec);
         const gainNode = context.createGain();
-
-        oscillator.connect(gainNode);
         gainNode.connect(context.destination);
-        oscillator.frequency.value = pattern.frequency;
-        oscillator.type = pattern.type ?? "sine";
 
         const endTime = startTime + pattern.durationMs / 1000;
-        gainNode.gain.setValueAtTime(Math.max(0.0001, pattern.gain), startTime);
+        gainNode.gain.setValueAtTime(0.0001, startTime);
+        gainNode.gain.linearRampToValueAtTime(Math.max(0.0001, pattern.gain), startTime + 0.012);
         gainNode.gain.exponentialRampToValueAtTime(0.0001, endTime);
-        oscillator.start(startTime);
-        oscillator.stop(endTime);
+        const partials = pattern.partials ?? [{ frequency: pattern.frequency ?? 440, gain: 1 }];
+
+        partials.forEach((partial) => {
+          const oscillator = context.createOscillator();
+          const partialGain = context.createGain();
+          oscillator.connect(partialGain).connect(gainNode);
+          oscillator.frequency.value = partial.frequency;
+          oscillator.type = pattern.type ?? "sine";
+          partialGain.gain.setValueAtTime(partial.gain, startTime);
+          oscillator.start(startTime);
+          oscillator.stop(endTime + 0.02);
+        });
       } catch {
         // Audio is best-effort only.
       }

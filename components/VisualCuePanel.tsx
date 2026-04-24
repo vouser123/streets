@@ -9,6 +9,7 @@ interface VisualCuePanelProps {
   activeKind: "user" | "acceptable" | "outside" | null;
   label: string;
   outsideVisualVariant: VisualVariant;
+  previewTiming?: boolean;
   userFlashContrast: UserFlashContrast;
 }
 
@@ -16,14 +17,16 @@ export function VisualCuePanel({
   activeKind,
   label,
   outsideVisualVariant,
+  previewTiming = false,
   userFlashContrast,
 }: VisualCuePanelProps) {
   return (
     <div
-      aria-hidden={activeKind === null}
+      aria-hidden="true"
       className={styles.panel}
       data-active={activeKind !== null}
       data-kind={activeKind ?? "idle"}
+      data-preview={previewTiming}
       data-variant={outsideVisualVariant}
       data-user-contrast={userFlashContrast}
     >

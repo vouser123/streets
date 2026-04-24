@@ -89,7 +89,7 @@ export function PracticePage() {
 
   return (
     <RouteFrame
-      intro="Practice stays centered on one large control. Timing setup, calibration, exemplars, and preferences each live on their own screen."
+      intro="Start an attempt, mark your crossing points, then compare your timing with the reference."
       preferences={state.preferences}
       title="Practice"
       titleRef={titleRef}
@@ -168,7 +168,7 @@ export function PracticePage() {
                     You: {result.userTime?.toFixed(2) ?? "missed"} sec | Ref:{" "}
                     {result.referenceTime.toFixed(2)} sec
                   </span>
-                  <span>{result.withinTolerance ? "Within tolerance" : "Outside tolerance"}</span>
+                  <span>{result.withinTolerance ? "On target" : "Needs adjustment"}</span>
                 </li>
               ))}
             </ul>

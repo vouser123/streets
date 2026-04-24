@@ -3,9 +3,10 @@
 import type { FeedbackToneId, UserToneId } from "@/lib/types";
 
 export interface TonePattern {
-  frequency: number;
+  frequency?: number;
   durationMs: number;
   gain: number;
+  partials?: Array<{ frequency: number; gain: number }>;
   type?: OscillatorType;
 }
 
@@ -16,52 +17,92 @@ export interface ToneOption<TToneId extends string> {
 }
 
 export const FEEDBACK_TONES: Record<FeedbackToneId, TonePattern> = {
-  "acceptable-a": { frequency: 660, durationMs: 220, gain: 0.18, type: "sine" },
-  "acceptable-b": { frequency: 780, durationMs: 180, gain: 0.16, type: "triangle" },
-  "outside-a": { frequency: 240, durationMs: 280, gain: 0.2, type: "square" },
-  "outside-b": { frequency: 180, durationMs: 320, gain: 0.22, type: "sawtooth" },
+  "acceptable-a": {
+    durationMs: 180,
+    gain: 0.42,
+    partials: [
+      { frequency: 880, gain: 1 },
+      { frequency: 1320, gain: 0.42 },
+    ],
+    type: "sine",
+  },
+  "acceptable-b": {
+    durationMs: 210,
+    gain: 0.42,
+    partials: [
+      { frequency: 740, gain: 1 },
+      { frequency: 1110, gain: 0.38 },
+    ],
+    type: "triangle",
+  },
+  "outside-a": {
+    durationMs: 240,
+    gain: 0.48,
+    partials: [
+      { frequency: 260, gain: 1 },
+      { frequency: 390, gain: 0.36 },
+    ],
+    type: "triangle",
+  },
+  "outside-b": {
+    durationMs: 280,
+    gain: 0.5,
+    partials: [
+      { frequency: 310, gain: 1 },
+      { frequency: 465, gain: 0.34 },
+    ],
+    type: "sawtooth",
+  },
 };
 
 export const USER_TONES: Record<UserToneId, TonePattern> = {
-  marker: { frequency: 410, durationMs: 160, gain: 0.16, type: "square" },
-  confirm: { frequency: 350, durationMs: 140, gain: 0.15, type: "triangle" },
+  marker: { frequency: 520, durationMs: 170, gain: 0.44, type: "triangle" },
+  confirm: {
+    durationMs: 190,
+    gain: 0.42,
+    partials: [
+      { frequency: 420, gain: 1 },
+      { frequency: 840, gain: 0.35 },
+    ],
+    type: "sine",
+  },
 };
 
 export const ACCEPTABLE_TONE_OPTIONS: ToneOption<"acceptable-a" | "acceptable-b">[] = [
   {
     id: "acceptable-a",
-    label: "Bright chime",
-    description: "Short higher chime for reference points that land within tolerance.",
+    label: "Clear high chime",
+    description: "Bright two-note cue for timing that is close to the target.",
   },
   {
     id: "acceptable-b",
-    label: "Soft bell",
-    description: "Rounder, lighter bell sound for within-tolerance feedback.",
+    label: "Lower clear chime",
+    description: "Lower two-note cue for timing that is close to the target.",
   },
 ];
 
 export const OUTSIDE_TONE_OPTIONS: ToneOption<"outside-a" | "outside-b">[] = [
   {
     id: "outside-a",
-    label: "Low buzz",
-    description: "Short lower buzz for reference points outside tolerance.",
+    label: "Low pulse",
+    description: "Strong lower cue for timing that needs adjustment.",
   },
   {
     id: "outside-b",
-    label: "Deep alert",
-    description: "Longer rough alert tone for outside-tolerance feedback.",
+    label: "Deep pulse",
+    description: "Longer lower cue for timing that needs adjustment.",
   },
 ];
 
 export const USER_TONE_OPTIONS: ToneOption<UserToneId>[] = [
   {
     id: "marker",
-    label: "Marker click",
-    description: "Square cue used for the user replay markers.",
+    label: "Marker tone",
+    description: "Clear cue used for your replay points.",
   },
   {
     id: "confirm",
-    label: "Confirm chime",
-    description: "Softer chime used as the user replay marker.",
+    label: "Confirm tone",
+    description: "Two-note cue used as an alternate replay point sound.",
   },
 ];

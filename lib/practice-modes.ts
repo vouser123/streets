@@ -14,10 +14,10 @@ export function getModeLabels(mode: PracticeMode): string[] {
 
 export function getModeTitle(mode: PracticeMode): string {
   if (mode === "2b") {
-    return "Two-part halfway";
+    return "Start to Halfway";
   }
   if (mode === "3") {
-    return "Three markers";
+    return "Start to Halfway to Finish";
   }
-  return "Two markers";
+  return "Start to Finish";
 }

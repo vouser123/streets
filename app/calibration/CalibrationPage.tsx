@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styles from "@/app/calibration/CalibrationPage.module.css";
 import { RouteFrame } from "@/components/RouteFrame";
 import { VisualCuePanel } from "@/components/VisualCuePanel";
@@ -15,17 +15,45 @@ import {
   USER_TONE_OPTIONS,
 } from "@/lib/audio-patterns";
 
+const VISUAL_PREVIEW_LEAD_IN_MS = 500;
+const VISUAL_PREVIEW_VISIBLE_MS = 200;
+const VISUAL_PREVIEW_EXIT_MS = 500;
+
 export function CalibrationPage() {
   const titleRef = useScreenReaderRouteFocus<HTMLHeadingElement>();
   const { state, setCalibration } = usePracticePersistence();
   const { playFeedbackPreview, playUserPreview } = useCuePlayback();
   const [visualKind, setVisualKind] = useState<"user" | "acceptable" | "outside" | null>(null);
+  const [visualLabel, setVisualLabel] = useState("Preview ready");
+  const visualPreviewTimersRef = useRef<number[]>([]);
 
   const calibration = state.calibration;
+  const clearVisualPreviewTimers = () => {
+    visualPreviewTimersRef.current.forEach((timer) => {
+      window.clearTimeout(timer);
+    });
+    visualPreviewTimersRef.current = [];
+  };
+
+  const previewVisualCue = (kind: "user" | "acceptable" | "outside", label: string) => {
+    clearVisualPreviewTimers();
+    setVisualKind(kind);
+    setVisualLabel(label);
+    visualPreviewTimersRef.current = [
+      window.setTimeout(
+        () => {
+          setVisualKind(null);
+          setVisualLabel("Preview ready");
+          visualPreviewTimersRef.current = [];
+        },
+        VISUAL_PREVIEW_LEAD_IN_MS + VISUAL_PREVIEW_VISIBLE_MS + VISUAL_PREVIEW_EXIT_MS,
+      ),
+    ];
+  };
 
   return (
     <RouteFrame
-      intro="Calibration owns sound and visual cue behavior only. Each option is reachable as a standard form control on a single phone-friendly screen."
+      intro="Choose the sound, visual, vibration, and spoken cue feedback used during practice and exemplars."
       preferences={state.preferences}
       title="Calibration"
       titleRef={titleRef}
@@ -33,7 +61,7 @@ export function CalibrationPage() {
       <section className={styles.panel}>
         <h2 className={styles.sectionTitle}>Feedback tones</h2>
         <fieldset className={styles.optionGroup}>
-          <legend className={styles.groupLegend}>Acceptable feedback</legend>
+          <legend className={styles.groupLegend}>On target</legend>
           {ACCEPTABLE_TONE_OPTIONS.map((option) => (
             <div key={option.id} className={styles.optionCard}>
               <label className={styles.optionLabel}>
@@ -59,7 +87,7 @@ export function CalibrationPage() {
           ))}
         </fieldset>
         <fieldset className={styles.optionGroup}>
-          <legend className={styles.groupLegend}>Outside feedback</legend>
+          <legend className={styles.groupLegend}>Needs adjustment</legend>
           {OUTSIDE_TONE_OPTIONS.map((option) => (
             <div key={option.id} className={styles.optionCard}>
               <label className={styles.optionLabel}>
@@ -183,7 +211,7 @@ export function CalibrationPage() {
       <section className={styles.panel}>
         <h2 className={styles.sectionTitle}>Visual shape</h2>
         <label className={styles.field}>
-          <span>Outside cue shape</span>
+          <span>Adjustment cue shape</span>
           <select
             onChange={(event) =>
               setCalibration({
@@ -217,30 +245,31 @@ export function CalibrationPage() {
         <div className={styles.previewRow}>
           <button
             className={styles.previewButton}
-            onClick={() => setVisualKind("user")}
+            onClick={() => previewVisualCue("user", "User flash preview")}
             type="button"
           >
             Preview user flash
           </button>
           <button
             className={styles.previewButton}
-            onClick={() => setVisualKind("acceptable")}
+            onClick={() => previewVisualCue("acceptable", "On target preview")}
             type="button"
           >
-            Preview acceptable cue
+            Preview on-target cue
           </button>
           <button
             className={styles.previewButton}
-            onClick={() => setVisualKind("outside")}
+            onClick={() => previewVisualCue("outside", "Needs adjustment preview")}
             type="button"
           >
-            Preview outside cue
+            Preview adjustment cue
           </button>
         </div>
         <VisualCuePanel
           activeKind={visualKind}
-          label={visualKind ? `${visualKind} preview` : "Preview surface"}
+          label={visualLabel}
           outsideVisualVariant={calibration.outsideVisualVariant}
+          previewTiming={visualKind !== null}
           userFlashContrast={calibration.userFlashContrast}
         />
       </section>

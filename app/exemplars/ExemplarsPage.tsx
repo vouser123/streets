@@ -11,15 +11,14 @@ import { VisualCuePanel } from "@/components/VisualCuePanel";
 import { useCuePlayback } from "@/hooks/useCuePlayback";
 import { usePracticePersistence } from "@/hooks/usePracticePersistence";
 import { useScreenReaderRouteFocus } from "@/hooks/useScreenReaderRouteFocus";
-import { getModeTitle } from "@/lib/practice-modes";
-import { buildReplayPlan } from "@/lib/practice-replay";
+import { getModeLabels, getModeTitle } from "@/lib/practice-modes";
 import { getReferenceTimesForMode, hasRequiredTiming } from "@/lib/practice-timing";
-import type { PracticeMode } from "@/lib/types";
+import type { PracticeMode, ReplayEvent } from "@/lib/types";
 
 export function ExemplarsPage() {
   const titleRef = useScreenReaderRouteFocus<HTMLHeadingElement>();
   const { state } = usePracticePersistence();
-  const { emitVisualCue, playReplayEvent } = useCuePlayback();
+  const { emitVisualCue, playReplayEvent, warmAudio } = useCuePlayback();
   const [message, setMessage] = useState(
     "Use an exemplar to hear and see the reference timing without marking your own cues.",
   );
@@ -27,16 +26,29 @@ export function ExemplarsPage() {
   const [visualLabel, setVisualLabel] = useState("Ready");
   const ready = hasRequiredTiming(state.timing);
 
-  const playExemplar = (mode: PracticeMode) => {
-    const referenceTimes = getReferenceTimesForMode(mode, state.timing);
-    const reference = buildReplayPlan(mode, referenceTimes, state.timing, 0.5, 0.9);
-    setMessage(`${getModeTitle(mode)} exemplar started.`);
-    reference.referenceEvents.forEach((event) => {
+  const playExemplar = async (mode: PracticeMode) => {
+    if (!ready) {
+      setMessage("Enter both street times before playing exemplars.");
+      return;
+    }
+
+    await warmAudio();
+    const labels = getModeLabels(mode);
+    const events = getReferenceTimesForMode(mode, state.timing).map<ReplayEvent>(
+      (timeSec, index) => ({
+        label: labels[index],
+        timeSec: 0.5 + timeSec,
+        type: "user",
+      }),
+    );
+
+    setMessage(`Playing exemplar: ${labels.join(" to ")}.`);
+    events.forEach((event) => {
       void playReplayEvent(event, state.calibration);
       if (state.calibration.outputMode !== "audio-only") {
         emitVisualCue(
-          event.feedbackType === "outside" ? "outside" : "acceptable",
-          event.label ?? "Reference cue",
+          "user",
+          event.label ?? "Reference point",
           state.calibration,
           (value) => {
             setVisualKind(value?.kind ?? null);
@@ -50,7 +62,7 @@ export function ExemplarsPage() {
 
   return (
     <RouteFrame
-      intro="Exemplars are separated from calibration so you can reach and repeat the reference timing without mixing in setup controls."
+      intro="Play the reference timing sequence for each practice route."
       preferences={state.preferences}
       title="Exemplars"
       titleRef={titleRef}
@@ -69,7 +81,8 @@ export function ExemplarsPage() {
             <button
               key={mode}
               className={styles.exemplarButton}
-              onClick={() => playExemplar(mode)}
+              disabled={!ready}
+              onClick={() => void playExemplar(mode)}
               type="button"
             >
               Play {getModeTitle(mode)}
