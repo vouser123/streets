@@ -42,7 +42,6 @@ streets/
 - [`components/`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/components): Shared render-only UI pieces such as task navigation, cue banner, visual cue surface, and the large practice button.
 - [`hooks/`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/hooks): Shared hook owners for audio readiness, speech, route focus, persistence, cue playback, and practice session state.
 - [`lib/`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/lib): Pure TypeScript helpers for timing, replay planning, labels, storage, defaults, and cue pattern definitions.
-- [`lib/web-audio-tone.ts`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/lib/web-audio-tone.ts): Low-level Web Audio tone scheduling helper used by browser cue playback hooks.
 - [`public/legacy-prototype.html`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/public/legacy-prototype.html): Preserved browser-served copy of the legacy prototype for side-by-side comparison while the rebuild is in progress.
 - [`index.html`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/index.html): Legacy prototype source baseline kept in repo root as the behavior reference.
 - [`RESEARCH.md`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/RESEARCH.md): Legacy research notes captured during prototype development.
