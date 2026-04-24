@@ -4,12 +4,14 @@
 
 import { useCallback, useRef } from "react";
 import type { TonePattern } from "@/lib/audio-patterns";
+import { type CancelScheduledTone, scheduleTone } from "@/lib/web-audio-tone";
 
 type BrowserAudioContext = AudioContext & { outputLatency?: number };
 
 export function useBrowserAudioContext() {
   const audioContextRef = useRef<BrowserAudioContext | null>(null);
   const audioResumePromiseRef = useRef<Promise<null> | null>(null);
+  const scheduledToneStopsRef = useRef<Set<CancelScheduledTone>>(new Set());
 
   const ensureAudioReady = useCallback(async () => {
     try {
@@ -54,37 +56,43 @@ export function useBrowserAudioContext() {
       try {
         const context = await ensureAudioReady();
         if (!context || context.state !== "running") {
-          return;
+          return null;
         }
 
-        const startTime = context.currentTime + Math.max(0, startDelaySec);
-        const gainNode = context.createGain();
-        gainNode.connect(context.destination);
-
-        const endTime = startTime + pattern.durationMs / 1000;
-        gainNode.gain.setValueAtTime(0.0001, startTime);
-        gainNode.gain.linearRampToValueAtTime(Math.max(0.0001, pattern.gain), startTime + 0.012);
-        gainNode.gain.exponentialRampToValueAtTime(0.0001, endTime);
-        const partials = pattern.partials ?? [{ frequency: pattern.frequency ?? 440, gain: 1 }];
-
-        partials.forEach((partial) => {
-          const oscillator = context.createOscillator();
-          const partialGain = context.createGain();
-          oscillator.connect(partialGain).connect(gainNode);
-          oscillator.frequency.value = partial.frequency;
-          oscillator.type = pattern.type ?? "sine";
-          partialGain.gain.setValueAtTime(partial.gain, startTime);
-          oscillator.start(startTime);
-          oscillator.stop(endTime + 0.02);
-        });
+        const cancelScheduledTone = scheduleTone(context, pattern, startDelaySec);
+        let cleanupTimeoutId: number | null = null;
+        const cancelTone = () => {
+          if (cleanupTimeoutId !== null) {
+            window.clearTimeout(cleanupTimeoutId);
+          }
+          cancelScheduledTone();
+          scheduledToneStopsRef.current.delete(cancelTone);
+        };
+        scheduledToneStopsRef.current.add(cancelTone);
+        cleanupTimeoutId = window.setTimeout(
+          () => {
+            scheduledToneStopsRef.current.delete(cancelTone);
+          },
+          (Math.max(0.01, startDelaySec) + pattern.durationMs / 1000 + 0.2) * 1000,
+        );
+        return cancelTone;
       } catch {
         // Audio is best-effort only.
       }
+      return null;
     },
     [ensureAudioReady],
   );
 
+  const cancelScheduledTones = useCallback(() => {
+    scheduledToneStopsRef.current.forEach((cancelTone) => {
+      cancelTone();
+    });
+    scheduledToneStopsRef.current.clear();
+  }, []);
+
   return {
+    cancelScheduledTones,
     ensureAudioReady,
     playTone,
   };

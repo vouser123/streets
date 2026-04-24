@@ -23,7 +23,7 @@ export interface VisualCueState {
 const VISUAL_RESET_DELAY_MS = 200;
 
 export function useCuePlayback() {
-  const { ensureAudioReady, playTone } = useBrowserAudioContext();
+  const { cancelScheduledTones, ensureAudioReady, playTone } = useBrowserAudioContext();
 
   const warmAudio = useCallback(async () => {
     await ensureAudioReady();
@@ -52,15 +52,14 @@ export function useCuePlayback() {
   const playReplayEvent = useCallback(
     async (event: ReplayEvent, settings: CalibrationSettings) => {
       if (settings.outputMode === "visual-only") {
-        return;
+        return null;
       }
       if (event.type === "user") {
-        await playTone(USER_TONES[settings.userToneId], event.timeSec);
-        return;
+        return playTone(USER_TONES[settings.userToneId], event.timeSec);
       }
       const toneId =
         event.feedbackType === "outside" ? settings.outsideToneId : settings.acceptableToneId;
-      await playTone(FEEDBACK_TONES[toneId], event.timeSec);
+      return playTone(FEEDBACK_TONES[toneId], event.timeSec);
     },
     [playTone],
   );
@@ -73,7 +72,8 @@ export function useCuePlayback() {
       setVisualCue: (value: VisualCueState | null) => void,
       delayMs = 0,
     ) => {
-      window.setTimeout(() => {
+      let resetTimeoutId: number | null = null;
+      const startTimeoutId = window.setTimeout(() => {
         setVisualCue({
           active: true,
           kind,
@@ -81,13 +81,20 @@ export function useCuePlayback() {
           outsideVisualVariant: settings.outsideVisualVariant,
           userFlashContrast: settings.userFlashContrast,
         });
-        window.setTimeout(() => setVisualCue(null), VISUAL_RESET_DELAY_MS);
+        resetTimeoutId = window.setTimeout(() => setVisualCue(null), VISUAL_RESET_DELAY_MS);
       }, delayMs);
+      return () => {
+        window.clearTimeout(startTimeoutId);
+        if (resetTimeoutId !== null) {
+          window.clearTimeout(resetTimeoutId);
+        }
+      };
     },
     [],
   );
 
   return {
+    cancelPlayback: cancelScheduledTones,
     warmAudio,
     playFeedbackPreview,
     playUserPreview,

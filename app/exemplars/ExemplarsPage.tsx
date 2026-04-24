@@ -3,7 +3,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "@/app/exemplars/ExemplarsPage.module.css";
 import { CueBanner } from "@/components/CueBanner";
 import { RouteFrame } from "@/components/RouteFrame";
@@ -18,7 +18,9 @@ import type { PracticeMode, ReplayEvent } from "@/lib/types";
 export function ExemplarsPage() {
   const titleRef = useScreenReaderRouteFocus<HTMLHeadingElement>();
   const { state } = usePracticePersistence();
-  const { emitVisualCue, playReplayEvent, warmAudio } = useCuePlayback();
+  const { cancelPlayback, emitVisualCue, playReplayEvent, warmAudio } = useCuePlayback();
+  const exemplarCleanupRef = useRef<Set<() => void>>(new Set());
+  const exemplarRunIdRef = useRef(0);
   const [message, setMessage] = useState(
     "Use an exemplar to hear and see the reference timing without marking your own cues.",
   );
@@ -26,13 +28,41 @@ export function ExemplarsPage() {
   const [visualLabel, setVisualLabel] = useState("Ready");
   const ready = hasRequiredTiming(state.timing);
 
+  const stopExemplarPlayback = () => {
+    exemplarRunIdRef.current += 1;
+    cancelPlayback();
+    exemplarCleanupRef.current.forEach((cancel) => {
+      cancel();
+    });
+    exemplarCleanupRef.current.clear();
+    setVisualKind(null);
+    setVisualLabel("Ready");
+  };
+
+  useEffect(
+    () => () => {
+      exemplarRunIdRef.current += 1;
+      cancelPlayback();
+      exemplarCleanupRef.current.forEach((cancel) => {
+        cancel();
+      });
+      exemplarCleanupRef.current.clear();
+    },
+    [cancelPlayback],
+  );
+
   const playExemplar = async (mode: PracticeMode) => {
+    stopExemplarPlayback();
+    const runId = exemplarRunIdRef.current;
     if (!ready) {
       setMessage("Enter both street times before playing exemplars.");
       return;
     }
 
     await warmAudio();
+    if (runId !== exemplarRunIdRef.current) {
+      return;
+    }
     const labels = getModeLabels(mode);
     const events = getReferenceTimesForMode(mode, state.timing).map<ReplayEvent>(
       (timeSec, index) => ({
@@ -44,9 +74,18 @@ export function ExemplarsPage() {
 
     setMessage(`Playing exemplar: ${labels.join(" to ")}.`);
     events.forEach((event) => {
-      void playReplayEvent(event, state.calibration);
+      void playReplayEvent(event, state.calibration).then((cancelTone) => {
+        if (!cancelTone) {
+          return;
+        }
+        if (runId !== exemplarRunIdRef.current) {
+          cancelTone();
+          return;
+        }
+        exemplarCleanupRef.current.add(cancelTone);
+      });
       if (state.calibration.outputMode !== "audio-only") {
-        emitVisualCue(
+        const cancelVisual = emitVisualCue(
           "user",
           event.label ?? "Reference point",
           state.calibration,
@@ -56,6 +95,7 @@ export function ExemplarsPage() {
           },
           event.timeSec * 1000,
         );
+        exemplarCleanupRef.current.add(cancelVisual);
       }
     });
   };
