@@ -11,6 +11,7 @@
     "biome:lint": "biome lint .",
     "biome:format": "biome format --write .",
     "biome:staged": "node scripts/run-biome-staged.mjs",
+    "a11y:screen-reader": "node scripts/check-screen-reader-contracts.mjs",
     "commit:preflight": "node scripts/commit-preflight.mjs",
     "dev": "next dev",
     "start": "next start",
@@ -27,7 +28,9 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.2",
     "@biomejs/biome": "^2.4.11",
+    "@playwright/test": "^1.59.1",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",

@@ -5,11 +5,11 @@
     "app/HomePage.tsx": "8940ef403176f06b396a1f7f562bfd2ca75cce8fa0967a0fb86568cf3edcc8bf",
     "app/calibration/CalibrationPage.tsx": "a7dedc4ad58370c9306cf0b848dc55c55e9494639df5d6f66986d2e06aa3c088",
     "app/calibration/page.tsx": "12772b75a4ebac10a391f1f29bfc75626a866f93fffa6405cc6c9ccef3af003b",
-    "app/exemplars/ExemplarsPage.tsx": "26ff7a80e94c2790841f17e384aa315e7ac6fa3ee871ba5571a68333fa01ab46",
+    "app/exemplars/ExemplarsPage.tsx": "35f51419fe570743f8e42b90b6b931b84451b4beb3048d1e0ad9aaae26699364",
     "app/exemplars/page.tsx": "7185932e7e9ac48db74922e25a8d5a123e3cdc9c9f1ae45a154e00e953fa29e6",
     "app/layout.tsx": "579cfa9eeddd0b41b9d0f07bf9d6b0090d96559d2502c280eb0f5de6864e5cf1",
     "app/page.tsx": "44924f2631fae93968c0b0183dd1435382e52c7656488cf85fba8f0fbbd03648",
-    "app/practice/PracticePage.tsx": "f3c5cf5078bcef1f49bc68da2266990a84fa709aa7ca397d112d0f15a9357d0d",
+    "app/practice/PracticePage.tsx": "4a83896266c04e56026550ae5b30ef522f88664aec7b41653113c6590b907f4b",
     "app/practice/page.tsx": "f721a31aadda48e6b1b8dd786e31cd19277c5803cf90e30a61088683dfb01cf1",
     "app/preferences/PreferencesPage.tsx": "c6310b65751ecf31a0662daa6d39b2bdef629e605f48a4e888072579248ca422",
     "app/preferences/page.tsx": "b1f08152c6cc83e15c357c9c325be98b06887fe32ccb311e5534f57b94be1939",
@@ -29,7 +29,7 @@
     "hooks/usePracticeSession.ts": "fe7ec682d4383d88ce9ce353835c85742c7746115d4e8a729b52a53c7edf3d17",
     "hooks/useScreenReaderRouteFocus.ts": "3e90091d78720b31bc2642da2aebe3c7692341f813bda8687abdedcbca65420b",
     "lib/audio-patterns.ts": "608964d1cbae02d1937a3fa5ad3f4b2e6dab36641adaeb3b47f3177750ae9a55",
-    "lib/practice-defaults.ts": "02c9b657ee6998a6d67176de0818ba4227517802940d35005499bf630f7670eb",
+    "lib/practice-defaults.ts": "82ea670fc22f6578290167e05bd91250694b865861754be431918cff06ada4b0",
     "lib/practice-labels.test.ts": "3618f90d46251a51c0efa14c3a4fb3fc2fe6479dfc9483f423e2a2adba412845",
     "lib/practice-labels.ts": "14b66f5db2064cbf595d2ead9ef5bff142251e4e93e018b8cd68f3c055a31c2c",
     "lib/practice-modes.ts": "095ce14da89b96376f32834de87008dcfb3626d68b6d73eae7b9f74d713cedf1",
@@ -43,19 +43,20 @@
     "next.config.ts": "0a7606a2c78ca541497b0316d79cae54f37ec772032a6c4f6d81e012fe0e8023",
     "scripts/check-docs-readme-update.mjs": "07d2abff4b7702eba2c8b780b87920c6e0be4d892f2cd7112aad3f84f546b340",
     "scripts/check-readme-update.mjs": "9021e907eb35e6b124d76758ea6c08783bf0fda174fe13611733d31dffcfe13a",
+    "scripts/check-screen-reader-contracts.mjs": "853cc9473d25b6a7b0a40bdbc0daf90694a919babf8ed8fe1541c3462d99d690",
     "scripts/check-structure.mjs": "4c58f4e2d83cc997ce7c4f37498261f0660f83435944ed5d5509a929230a255f",
     "scripts/commit-preflight.mjs": "a74f06c2ff13ff3c9f30448339ac33d49c572c510f563062b445dfc77c800e50",
     "scripts/generate-beads-quickref.mjs": "1422387743baa3d6f633b887b6ad3b0084ede4fc041934b80d89f629caffc5b7",
     "scripts/run-biome-staged.mjs": "46d1b596a52616b889cbfc6a55589a9262dc24c0e681fee478fba55e47527f03",
     "vitest.config.ts": "3aad91a4e6e364471b6beda81c0f1beb2fadfd53dc7e1489e08ac2b1b9dde494"
   },
-  "indexed_at_commit": "46f7966af1c3ecf4c3ba785f72ff5530e5100cc9",
-  "indexed_at_timestamp": "2026-04-24T23:45:37.437595100+00:00",
+  "indexed_at_commit": "b8beb3cb9fdb75b868b48f09e0bf60293e0a6b6e",
+  "indexed_at_timestamp": "2026-04-25T00:01:02.701521600+00:00",
   "schema_version": 3,
   "stats": {
-    "total_edges": 67,
-    "total_files": 48,
-    "total_nodes": 117
+    "total_edges": 70,
+    "total_files": 49,
+    "total_nodes": 122
   },
   "vexp_version": "2.0.12"
 }

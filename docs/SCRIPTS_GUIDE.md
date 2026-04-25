@@ -51,6 +51,10 @@ Notes:
 - `npm run structure:check`
   - Runs the staged-file structure guard directly.
   - Use it when you want a manual read on structure issues before a commit attempt.
+- `npm run a11y:screen-reader`
+  - Runs axe WCAG checks plus Streets-specific screen-reader focus-stop contracts against a running local app.
+  - Start the dev server first with `npm run dev -- --port 3000`, or set `STREETS_A11Y_BASE_URL` to another local URL.
+  - This checks DOM/accessibility contracts such as one focusable control owning one complete spoken name; it does not replace final VoiceOver or TalkBack traversal for mobile-critical flows.
 - `node scripts/check-readme-update.mjs`
   - Checks whether staged repo-shape files should also stage `README.md`.
 - `node scripts/check-docs-readme-update.mjs`

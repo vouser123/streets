@@ -58,6 +58,7 @@ streets/
 - [`scripts/check-readme-update.mjs`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/scripts/check-readme-update.mjs): README update reminder guard for repo-shape changes.
 - [`scripts/check-docs-readme-update.mjs`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/scripts/check-docs-readme-update.mjs): Docs index reminder guard for `docs/` changes.
 - [`scripts/check-structure.mjs`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/scripts/check-structure.mjs): Staged-file structure guard for the machine-checkable parts of the TypeScript Next.js structure rules.
+- [`scripts/check-screen-reader-contracts.mjs`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/scripts/check-screen-reader-contracts.mjs): Browser-based axe and screen-reader focus contract checks for mobile-critical routes.
 - [`scripts/run-biome-staged.mjs`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/scripts/run-biome-staged.mjs): Pre-commit Biome helper that formats and lints the staged snapshot, then re-stages the changes.
 - [`scripts/run-gitleaks-staged.ps1`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/scripts/run-gitleaks-staged.ps1): Pre-commit secret scan helper that exports the current Git index snapshot and scans it with the repo-pinned Gitleaks config.
 - [`biome.json`](C:/Users/cindi/OneDrive/Documents/GitHub/streets/biome.json): Repo formatter and linter config for Streets.
