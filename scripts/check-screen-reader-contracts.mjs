@@ -18,6 +18,44 @@ const expectedPracticeModes = [
   { label: "Start to Finish", value: "2", checked: false },
   { label: "Start to Halfway to Finish", value: "3", checked: false },
 ];
+const expectedNavLabels = [
+  "Practice",
+  "Timing Setup",
+  "Calibration",
+  "Exemplars",
+  "Preferences",
+  "Legacy Prototype",
+];
+const readyAppState = {
+  version: 1,
+  lastMode: "2b",
+  timing: {
+    clearTime: 6.5,
+    fullTime: 12,
+    tolerance: 0.5,
+  },
+  calibration: {
+    acceptableToneId: "acceptable-a",
+    outsideToneId: "outside-a",
+    userToneId: "marker",
+    outputMode: "audio-only",
+    showBanner: true,
+    flashAction: false,
+    vibrate: false,
+    syncVisualReplay: true,
+    outsideVisualVariant: "up",
+    userFlashContrast: "soft",
+    announceCues: true,
+  },
+  preferences: {
+    theme: "system",
+    textSize: "default",
+    highContrast: false,
+    focusBoost: false,
+    useTextLabels: true,
+    reducedMotion: false,
+  },
+};
 
 function assert(condition, message, failures) {
   if (!condition) {
@@ -50,14 +88,85 @@ async function runAxe(page, route, failures) {
   }
 }
 
+async function setPersistedAppState(page, appState) {
+  await page.addInitScript((value) => {
+    window.localStorage.setItem("om-app-state", JSON.stringify(value));
+  }, appState);
+}
+
+async function resetAppState(page) {
+  await page.addInitScript(() => {
+    window.localStorage.removeItem("om-app-state");
+  });
+}
+
+async function checkTaskNav(page, route, failures) {
+  const navLabels = await page
+    .getByRole("navigation", { name: "Primary" })
+    .getByRole("link")
+    .evaluateAll((links) => links.map((link) => link.textContent?.trim() ?? "").filter(Boolean));
+  assert(
+    JSON.stringify(navLabels) === JSON.stringify(expectedNavLabels),
+    `${route}: primary navigation labels changed. Expected ${expectedNavLabels.join(", ")}, got ${navLabels.join(", ")}`,
+    failures,
+  );
+}
+
+async function checkTimingPage(page, failures) {
+  await page.goto(`${baseUrl}/timing`, { waitUntil: "networkidle" });
+  await runAxe(page, "/timing", failures);
+  await checkTaskNav(page, "/timing", failures);
+
+  const fields = await page.locator("label").evaluateAll((labels) =>
+    labels
+      .map((label) => {
+        const input = label.querySelector("input");
+        if (!input) {
+          return null;
+        }
+        return {
+          inputMode: input.getAttribute("inputmode") ?? "",
+          label: label.textContent?.trim() ?? "",
+          pattern: input.getAttribute("pattern") ?? "",
+          type: input.getAttribute("type") ?? "",
+        };
+      })
+      .filter(Boolean),
+  );
+
+  const expectedFields = [
+    "Time to clear from left (first half)",
+    "Full street crossing time",
+    "Margin of error",
+  ];
+  expectedFields.forEach((expected, index) => {
+    const actual = fields[index];
+    assert(Boolean(actual), `/timing: missing field ${expected}`, failures);
+    if (!actual) {
+      return;
+    }
+    assert(
+      actual.label === expected,
+      `/timing: expected field label "${expected}", got "${actual.label}"`,
+      failures,
+    );
+    assert(
+      actual.type === "text",
+      `/timing: ${expected} should be a text input, got "${actual.type}"`,
+      failures,
+    );
+    assert(
+      actual.inputMode === "decimal",
+      `/timing: ${expected} should use decimal input mode, got "${actual.inputMode}"`,
+      failures,
+    );
+  });
+}
+
 async function checkPracticeModeRadios(page, failures) {
   await page.goto(`${baseUrl}/practice`, { waitUntil: "networkidle" });
-  await page.evaluate(() => {
-    localStorage.removeItem("om-app-state");
-  });
-  await page.reload({ waitUntil: "networkidle" });
-
   await runAxe(page, "/practice", failures);
+  await checkTaskNav(page, "/practice", failures);
 
   const modes = await page
     .locator("fieldset")
@@ -129,6 +238,100 @@ async function checkPracticeModeRadios(page, failures) {
   });
 }
 
+async function checkCalibrationPage(page, failures) {
+  await page.goto(`${baseUrl}/calibration`, { waitUntil: "networkidle" });
+  await runAxe(page, "/calibration", failures);
+  await checkTaskNav(page, "/calibration", failures);
+
+  const buttonLabels = await page
+    .getByRole("button")
+    .evaluateAll((buttons) =>
+      buttons.map((button) => button.textContent?.trim() ?? "").filter(Boolean),
+    );
+  const expectedButtons = [
+    "Preview Medium clear tone",
+    "Preview Higher clear tone",
+    "Preview Lower steady tone",
+    "Preview Deep steady tone",
+    "Preview Marker tone",
+    "Preview Confirm tone",
+    "Preview user flash",
+    "Preview on-target cue",
+    "Preview adjustment cue",
+  ];
+  expectedButtons.forEach((expected) => {
+    assert(buttonLabels.includes(expected), `/calibration: missing button "${expected}"`, failures);
+  });
+  assert(
+    !buttonLabels.some((label) => /acceptable/i.test(label)),
+    '/calibration: user-facing buttons should not expose "acceptable"',
+    failures,
+  );
+}
+
+async function checkExemplarsPage(page, failures) {
+  await page.goto(`${baseUrl}/exemplars`, { waitUntil: "networkidle" });
+  await runAxe(page, "/exemplars", failures);
+  await checkTaskNav(page, "/exemplars", failures);
+
+  const buttons = await page.getByRole("button").evaluateAll((elements) =>
+    elements.map((element) => ({
+      disabled: element.hasAttribute("disabled"),
+      text: element.textContent?.trim() ?? "",
+    })),
+  );
+  const expectedTexts = [
+    "Play Start to Halfway",
+    "Play Start to Finish",
+    "Play Start to Halfway to Finish",
+  ];
+  expectedTexts.forEach((expected, index) => {
+    const actual = buttons[index];
+    assert(Boolean(actual), `/exemplars: missing button "${expected}"`, failures);
+    if (!actual) {
+      return;
+    }
+    assert(
+      actual.text === expected,
+      `/exemplars: expected "${expected}", got "${actual.text}"`,
+      failures,
+    );
+    assert(
+      !actual.disabled,
+      `/exemplars: "${expected}" should be enabled with seeded timing`,
+      failures,
+    );
+  });
+}
+
+async function checkPreferencesPage(page, failures) {
+  await page.goto(`${baseUrl}/preferences`, { waitUntil: "networkidle" });
+  await runAxe(page, "/preferences", failures);
+  await checkTaskNav(page, "/preferences", failures);
+
+  const checkboxes = await page
+    .getByRole("checkbox")
+    .evaluateAll((elements) =>
+      elements.map(
+        (element) =>
+          element.getAttribute("aria-label") ?? element.parentElement?.textContent?.trim() ?? "",
+      ),
+    );
+  const expectedCheckboxLabels = [
+    "High contrast",
+    "Focus boost",
+    "Prefer text labels over shorthand",
+    "Reduce motion",
+  ];
+  expectedCheckboxLabels.forEach((expected) => {
+    assert(
+      checkboxes.some((label) => label.includes(expected)),
+      `/preferences: missing checkbox "${expected}"`,
+      failures,
+    );
+  });
+}
+
 async function main() {
   const executablePath = await findExistingChrome();
   const browser = await chromium.launch({
@@ -140,7 +343,13 @@ async function main() {
   const failures = [];
 
   try {
+    await resetAppState(page);
+    await checkTimingPage(page, failures);
+    await setPersistedAppState(page, readyAppState);
     await checkPracticeModeRadios(page, failures);
+    await checkCalibrationPage(page, failures);
+    await checkExemplarsPage(page, failures);
+    await checkPreferencesPage(page, failures);
   } finally {
     await context.close();
     await browser.close();
